@@ -6,31 +6,30 @@ from botLogic import init
 userList = []
 bot.init()
 #--------------------------------
-text = 'https://api.vk.com/method/groups.getLongPollServer?v=5.101&group_id=161748193&access_token='
-text = text+bot.access_token
-
-r = rq.get(text)
-server = r.json()
-server = server["response"]
-
+bot.lpsInit()
 while 1:
-	text = bot.lpsCheck(server)
+	text = bot.lpsCheck(bot.server)
 	r = rq.get(text)
 	print(r.text)
+	if server.get("failed") != none
+		bot.lpsInit()
+		continue
 	server["ts"]=r.json()["ts"]
 	updates = r.json()["updates"]
 	if len(updates) > 0:
 		for update in updates:
 			if update["type"] == "message_new":
 				message = update["object"]["text"]
-				user = str(update["object"]["peer_id"])
-				bot.newMessage.update({"user":user, "message":message, "new":True})
-				print('{0} | {1}'.format(message, user))
+				peer = str(update["object"]["peer_id"])
+				if peer[0] == '2':
+
+				bot.newMessage.update({"user":peer, "message":message, "new":True})
+				print('{0} | {1}'.format(message, peer))
 				isExist = True
 				for u in userList:
-					if u.name == user:
+					if u.name == peer:
 						isExist = False
 				if isExist:
-					userList.append(tr.Thread(target = init, args = (user, ), daemon = True, name = user))
+					userList.append(tr.Thread(target = init, args = (peer, ), daemon = True, name = peer))
 					userList[-1].start()
 	print('---------------------------')

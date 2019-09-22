@@ -4,9 +4,18 @@ import random
 def init():
 	global access_token
 	global newMessage
+	global server
 
 	access_token = '3ec68f5d2d7437c543d56f5c2620dafc033ccd64286ecc73d23ec8969e9a5424ea9553458ddbbd681e067'
 	newMessage = {"user":0, "message":"", "new":False}
+	server = {}
+
+def lpsInit():
+	lps = 'https://api.vk.com/method/groups.getLongPollServer?v=5.101&group_id=161748193&access_token='
+	lps = lps+access_token
+	r = rq.get(lps)
+	server = r.json()
+	server = server["response"]
 
 def lpsCheck(json):
 	text = json["server"]
