@@ -24,12 +24,13 @@ while 1:
 			if update["type"] == "message_new":
 				message = update["object"]["text"]
 				user = str(update["object"]["from_id"])
-				newMessage.update({"user":user, "message":message})
+				bot.newMessage.update({"user":user, "message":message, "new":True})
 				print('{0} | {1}'.format(message, user))
 				isExist = True
 				for u in userList:
 					if u.name == user:
 						isExist = False
 				if isExist:
-					userList.append(Thread(target = init, args = (user, ), daemon = True))
+					userList.append(tr.Thread(target = init, args = (user, ), daemon = True, name = user))
 					userList[-1].start()
+	print('---------------------------')
