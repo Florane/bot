@@ -2,6 +2,7 @@ import threading as tr
 import botBasic as bot
 from time import sleep
 import re
+import random as rand
 #--------------------------------
 def isNewMessage(user):
 	while not (bot.newMessage["user"] == user and bot.newMessage["new"] == True):
@@ -21,6 +22,17 @@ def firstCharacter(user):
 				break
 			else:
 				bot.printMessage('Нажмите на одну из кнопок ниже, чтобы продолжить' ,user)
+#--------------------------------
+def diceRoll(amount, sides):
+	ret = 0
+	dices = []
+	i = 0
+	while i < amount:
+		new = rand.randint(1,sides)
+		ret += new
+		dices.append(new)
+		i+=1
+	return str(ret) + ' ' + str(dices)
 #--------------------------------
 def init(user):
 	while 1:
@@ -50,6 +62,14 @@ def init(user):
 						elif found == True:
 							answer += line
 				bot.printMessage(answer, user)
+			#--------------------
+			elif re.match(r'Бросить', message) != None or re.match(r'Roll', message) != None:
+				roll = re.compile(r'(\d+)D(\d+)')
+				roll = roll.search(message)
+				if roll != None:
+					bot.printMessage('Вам выпало {0}'.format(diceRoll(int(roll.group(1)), int(roll.group(2)))), user)
+				else:
+					bot.printMessage('Неверный синтаксис\nБросить <число>d<число>', user)
 			#--------------------
 			elif message == 'Начать':
 				firstCharacter(user)
