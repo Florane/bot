@@ -45,7 +45,7 @@ def init(user):
 						ans = re.match(r'\:\s(.*)', line)
 						if ans != None:
 							answer += ans.group(1) + '\n'
-				bot.printMessage(answer, user)				
+				bot.printMessage(answer, user)
 			elif re.match(r'Помощь', message) != None:
 				answer = ''
 				command = re.match(r'Помощь\s(.*)', message).group(1)
@@ -71,8 +71,9 @@ def init(user):
 				else:
 					bot.printMessage('Неверный синтаксис\nБросить <число>d<число>', user)
 			#--------------------
-			elif message == 'Начать':
-				firstCharacter(user)
-			else:
-				bot.printMessage('Введите "Помощь" чтобы получить список комманд',user)
+			elif user[0] != '2':
+				if message == 'Начать':
+					firstCharacter(user)
+				else:
+					bot.printMessage('Введите "Помощь" чтобы получить список комманд', user)
 		sleep(0.1)

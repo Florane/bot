@@ -16,14 +16,14 @@ server = server["response"]
 while 1:
 	text = bot.lpsCheck(server)
 	r = rq.get(text)
-	server["ts"]=r.json()["ts"]
 	print(r.text)
+	server["ts"]=r.json()["ts"]
 	updates = r.json()["updates"]
 	if len(updates) > 0:
 		for update in updates:
 			if update["type"] == "message_new":
 				message = update["object"]["text"]
-				user = str(update["object"]["from_id"])
+				user = str(update["object"]["peer_id"])
 				bot.newMessage.update({"user":user, "message":message, "new":True})
 				print('{0} | {1}'.format(message, user))
 				isExist = True
