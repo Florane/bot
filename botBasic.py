@@ -34,9 +34,9 @@ def printMessage(message, user):
 		if not len(message) > maxSize:
 			break
 		message = message[maxSize:]
-	print(len(newMsg))
 	r = ''
 	print(newMsg)
+	print(len(newMsg))
 	for msg in newMsg:
 		text = 'https://api.vk.com/method/messages.send?v=5.101'
 		text += '&peer_id=' + str(user)
