@@ -13,7 +13,7 @@ def isNewMessage(user):
 #--------------------------------
 def createCharacter(user):
 	with open('characters/' + user + '.json', 'w', encoding = 'utf-8') as file:
-		with open('flavorText/createCharacter/0.dat', encoding = 'utf-8') as file:
+		with open('flavorText/firstCharacter/createCharacter/0.dat', encoding = 'utf-8') as file:
 			bot.printMessage(file.read(), user)
 		isNewMessage(user)
 		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
@@ -83,7 +83,7 @@ def init(user):
 				else:
 					bot.printMessage('Неверный синтаксис\nБросить <число>d<число>', user)
 			#--------------------
-			elif user[0] != '2':
+			elif user[:2] != '20':
 				if message == 'Начать':
 					firstCharacter(user)
 				else:
