@@ -11,18 +11,23 @@ while 1:
 	text = bot.lpsCheck(bot.server)
 	r = rq.get(text)
 	print(r.text)
-	if server.get("failed") != none
+	if bot.server.get("failed") != None:
 		bot.lpsInit()
 		continue
-	server["ts"]=r.json()["ts"]
+	bot.server["ts"]=r.json()["ts"]
 	updates = r.json()["updates"]
 	if len(updates) > 0:
 		for update in updates:
 			if update["type"] == "message_new":
 				message = update["object"]["text"]
 				peer = str(update["object"]["peer_id"])
+				bot.newMessage.clear()
 				if peer[0] == '2':
-
+					user = str(update["object"]["from_id"])
+					with open('technical/admins.dat') as file:
+						for line in file:
+							if line.strip() == user:
+								bot.newMessage.update({"admin":user})
 				bot.newMessage.update({"user":peer, "message":message, "new":True})
 				print('{0} | {1}'.format(message, peer))
 				isExist = True

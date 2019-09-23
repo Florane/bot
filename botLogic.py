@@ -1,12 +1,13 @@
 import threading as tr
 import botBasic as bot
-from time import sleep
+import time
 import re
 import random as rand
+import requests as rq
 #--------------------------------
 def isNewMessage(user):
-	while not (bot.newMessage["user"] == user and bot.newMessage["new"] == True):
-		sleep(0.1)
+	while not (bot.newMessage.get("user") == user and bot.newMessage.get("new") == True):
+		time.sleep(0.1)
 	bot.newMessage.update({"new":False})
 	return True
 #--------------------------------
@@ -15,7 +16,7 @@ def createCharacter(user):
 		with open('flavorText/createCharacter/0.dat', encoding = 'utf-8') as file:
 			bot.printMessage(file.read(), user)
 		isNewMessage(user)
-		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), user)
+		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
 
 #--------------------------------
 def firstCharacter(user):
@@ -48,6 +49,7 @@ def init(user):
 	while 1:
 		if isNewMessage(user):
 			message = bot.newMessage["message"].title()
+			admin = bot.newMessage.get("admin")
 			if message == 'Помощь':
 				answer = ''
 				with open('help.dat',encoding = 'utf-8') as file:
@@ -86,4 +88,4 @@ def init(user):
 					firstCharacter(user)
 				else:
 					bot.printMessage('Введите "Помощь" чтобы получить список комманд', user)
-		sleep(0.1)
+		time.sleep(0.1)
