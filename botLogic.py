@@ -1,5 +1,6 @@
 import threading as tr
 import botBasic as bot
+import polishCalc as pol
 import time
 import re
 import random as rand
@@ -33,16 +34,14 @@ def firstCharacter(user):
 			else:
 				bot.printMessage('Нажмите на одну из кнопок ниже, чтобы продолжить' ,user)
 #--------------------------------
-def diceRoll(amount, sides):
-	ret = 0
-	dices = []
-	i = 0
-	while i < amount:
-		new = rand.randint(1,sides)
-		ret += new
-		dices.append(new)
-		i+=1
-	return str(ret) + ' ' + str(dices)
+def diceCalc(string):
+	string = string.lower()
+	string = re.sub(r'\s+',r'',string)
+	try:
+		solved = pol.solvePolish(pol.toPolish(string))
+	except SyntaxError:
+		return None
+	return str(solved['num']) + ' = ' + pol.cutDices(string, solved['dices'])
 #--------------------------------
 def init(user):
 	while 1:
@@ -75,12 +74,13 @@ def init(user):
 				bot.printMessage(answer, user)
 			#--------------------
 			elif re.match(r'Бросить', message) != None or re.match(r'Roll', message) != None:
-				roll = re.compile(r'(\d+)D(\d+)')
+				roll = re.compile(r'\S+\s(.+)')
 				roll = roll.search(message)
-				if roll != None:
-					bot.printMessage('Вам выпало {0}'.format(diceRoll(int(roll.group(1)), int(roll.group(2)))), user)
+				answer = diceCalc(roll.group(1))
+				if roll != None and answer != None:
+					bot.printMessage('Вам выпало {0}'.format(answer), user)
 				else:
-					bot.printMessage('Неверный синтаксис\nБросить <число>d<число>', user)
+					bot.printMessage('Неверный синтаксис', user)
 			#--------------------
 			elif user[:2] != '20':
 				if message == 'Начать':
