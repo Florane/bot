@@ -12,21 +12,20 @@ def isNewMessage(user):
 	return True
 #--------------------------------
 def createCharacter(user):
-	with open('characters/' + user + '.json', 'w', encoding = 'utf-8') as file:
+	with open('characters/' + user + '.json', 'w+', encoding = 'utf-8') as file:
 		with open('flavorText/firstCharacter/createCharacter/0.dat', encoding = 'utf-8') as file:
 			bot.printMessage(file.read(), user)
 		isNewMessage(user)
 		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
-
 #--------------------------------
 def firstCharacter(user):
 	with open('flavorText/firstCharacter/begin.dat', encoding = 'utf-8') as file:
 		bot.printMessage(file.read(), user)
 		while 1:
-			if isNewMessage(user) and bot.newMessage["message"] == 'Компания':
+			if isNewMessage(user) and bot.newMessage["message"] == 'Зарегистрировать компанию':
 				print('test')
 				break
-			elif bot.newMessage["message"] == 'Персонаж':
+			elif bot.newMessage["message"] == 'Зарегистрировать коммандора':
 				with open('flavorText/firstCharacter/characterFirst0.dat', encoding = 'utf-8') as file:
 					bot.printMessage(file.read(), user)
 				createCharacter(user)
