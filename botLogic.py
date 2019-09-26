@@ -1,10 +1,7 @@
-import threading as tr
 import botBasic as bot
 import polishCalc as pol
 import time
 import re
-import random as rand
-import requests as rq
 #--------------------------------
 def isNewMessage(user):
 	while not (bot.newMessage.get("user") == user and bot.newMessage.get("new") == True):
@@ -47,7 +44,7 @@ def init(user):
 	while 1:
 		if isNewMessage(user):
 			message = bot.newMessage["message"].title()
-			admin = bot.newMessage.get("admin")
+			#admin = bot.newMessage.get("admin")
 			if message == 'Помощь':
 				answer = ''
 				with open('help.dat',encoding = 'utf-8') as file:

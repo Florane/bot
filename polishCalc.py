@@ -75,39 +75,30 @@ def solvePolish(line):
     for char in line:
         if char == 'n':
             stack[-1] = str(-int(stack[-1]))
-        elif char == 'd':
+        elif re.match(r'[d^/*-+]', char):
             b = int(stack.pop())
             a = int(stack.pop())
-            c = diceRoll(a, b)
-            stack.append(c['num'])
-            dices.append(c['dices'])
-        elif char == '^':
-            b = int(stack.pop())
-            a = int(stack.pop())
-            c = a ** b
-            stack.append(c)
-        elif char == '/':
-            b = int(stack.pop())
-            a = int(stack.pop())
-            if b == 0:
-                raise SyntaxError
-            c = int(a / b)
-            stack.append(c)
-        elif char == '*':
-            b = int(stack.pop())
-            a = int(stack.pop())
-            c = a * b
-            stack.append(c)
-        elif char == '-':
-            b = int(stack.pop())
-            a = int(stack.pop())
-            c = a - b
-            stack.append(c)
-        elif char == '+':
-            b = int(stack.pop())
-            a = int(stack.pop())
-            c = a + b
-            stack.append(c)
+            if char == 'd':
+                c = diceRoll(a, b)
+                stack.append(c['num'])
+                dices.append(c['dices'])
+            elif char == '^':
+                c = a ** b
+                stack.append(c)
+            elif char == '/':
+                if b == 0:
+                    raise SyntaxError
+                c = int(a / b)
+                stack.append(c)
+            elif char == '*':
+                c = a * b
+                stack.append(c)
+            elif char == '-':
+                c = a - b
+                stack.append(c)
+            elif char == '+':
+                c = a + b
+                stack.append(c)
         else:
             stack.append(char)
     ret = {}

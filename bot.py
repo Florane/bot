@@ -10,11 +10,12 @@ bot.lpsInit()
 while 1:
 	text = bot.lpsCheck(bot.server)
 	r = rq.get(text)
-	print(r.text)
 	if r.json().get("failed") == 2:
-		print("failed")
 		bot.lpsInit()
 		continue
+	if len(r.json().get('updates')) == 0:
+		continue
+	print(r.text)
 	bot.server["ts"]=r.json()["ts"]
 	updates = r.json()["updates"]
 	if len(updates) > 0:
