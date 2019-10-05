@@ -1,5 +1,6 @@
 import botBasic as bot
 import polishCalc as pol
+import botCharacter as char
 import time
 import re
 import threading as tr
@@ -18,35 +19,35 @@ def createCommander(user, helpListings, mainLock):
 		mainLock.wait()
 		if isNewMessage(user):
 			character['flavor'] = bot.newMessage.get('message')
+
 		maxLevel = pol.solvePolish(pol.toPolish('40+3d6p1'))['num']
 		with open('flavorText/firstCharacter/createCharacter/1.dat', encoding = 'utf-8') as file:
 			bot.printMessage(file.read().format(maxLevel), user)
 		helpListings[0] = 'mc'
 		while mainLock.wait():
 			if isNewMessage(user):
-				stat = {}
-				statList = ['INT','REF','CHAR','TECH','LUCK','MA','BODY','EM']
-				statRegex = re.compile(r'(\S{2,4}\s+|)(\d+)')
-				char = statRegex.findall(bot.newMessage.get('message'))
-				if len(char) != 8:
+				try:
+					statList = [["INT","Интеллект"],["REF","Рефлексы"],["CHAR","Харизма"],["TECH","Техническе Навыки"],["LUCK","Удача"],["MA","Скорость Бега"],["BODY","Телосложение"],["EM","Эмпатия"]]
+					character['stats'] = char.commanderStats(bot.newMessage.get('message'), maxLevel, statList)
+					break
+				except SyntaxError:
 					bot.printMessage('Ошибка: Неверное кол-во вхождений', user)
-					continue
-				sum = 0
-				for entry in char:
-					isStat = False
-					for test in statList:
-						if entry[0] == test:
-							isStat = True
-							stat[test] = entry[1]
-					if not isStat:
-						for test in statList:
-							if stat.get(test) == None:
-								stat[test] = entry[1]
-					sum += int(entry[1])
-				if sum != maxLevel:
+				except ValueError:
 					bot.printMessage('Ошибка: Неверная сумма вхождений', user)
-					continue
-				break
+
+		with open('flavorText/firstCharacter/createCharacter/2.dat', encoding = 'utf-8') as file:
+			bot.printMessage(file.read().format(maxLevel), user)
+		helpListings[0] = 'mvb'
+		while mainLock.wait():
+			if isNewMessage(user):
+				try:
+					statList = [["Notice","Внимательность"],["Handgun","Пистолеты"],["Submachine gun","Пистолеты-пулеметы"],["Rifle","Винтовки"],["Dodge","Уворот"],["Melee","Рукопашная"],[""]]
+					character['stats'] = char.commanderStats(bot.newMessage.get('message'), maxLevel, statList)
+					break
+				except SyntaxError:
+					bot.printMessage('Ошибка: Неверное кол-во вхождений', user)
+				except AddingError:
+					bot.printMessage('Ошибка: Неверная сумма вхождений', user)
 		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
 		characterFile.write(str(character))
 #--------------------------------
@@ -82,7 +83,7 @@ def diceCalc(string):
 #--------------------------------
 def init(user):
 	helpListings = ['mf']
-	if user[:2] == '20':
+	if user[:3] == '200':
 		helpListings[0] = 'm'
 	mainLock = tr.Event()
 	errorLock = tr.Event()
@@ -142,8 +143,8 @@ def init(user):
 				else:
 					bot.printMessage('Неверный синтаксис', user)
 			#--------------------
-			elif user[:2] != '20':
-				if message == 'Начать':
+			elif user[:3] != '200':
+				if message == 'Начать' and helpListings[0].find('f') >= 0:
 					tr.Thread(target = firstCharacter,args =  (user, helpListings, mainLock, errorLock)).start()
 				elif errorLock.is_set():
 					bot.printMessage('Введите "Помощь" чтобы получить список комманд', user)
