@@ -2,7 +2,7 @@ import re
 #--------------------------------
 def commanderStats(message, maxLevel, statList):
     stat = {}
-    statRegex = re.compile(r'([^0-9]+|)\s(\d+)')
+    statRegex = re.compile(r'([^0-9]+\s|\s*)(\d+)')
     char = statRegex.findall(message)
     print(char)
     if len(char) != len(statList):

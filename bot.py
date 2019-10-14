@@ -2,6 +2,7 @@ import requests as rq
 import threading as tr
 import botBasic as bot
 from botLogic import init
+from time import sleep
 #--------------------------------
 userList = []
 bot.init()
@@ -23,14 +24,16 @@ while 1:
 			if update["type"] == "message_new":
 				message = update["object"]["text"]
 				peer = str(update["object"]["peer_id"])
-				bot.newMessage.clear()
-				if peer[:2] == '20':
+				addMessage = {}
+				if peer[:3] == '200':
 					user = str(update["object"]["from_id"])
 					with open('technical/admins.dat') as file:
 						for line in file:
 							if line.strip() == user:
-								bot.newMessage.update({"admin":user})
-				bot.newMessage.update({"user":peer, "message":message, "new":True})
+								addMessage.update({"admin":user})
+				addMessage.update({"user":peer, "message":message})
+				bot.newMessage.put(addMessage)
+				print(bot.newMessage.queue)
 				print('{0} | {1}'.format(message, peer))
 				isExist = True
 				for u in userList:

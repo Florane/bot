@@ -1,4 +1,5 @@
 import requests as rq
+import queue
 import random
 from time import sleep
 #--------------------------------
@@ -8,7 +9,7 @@ def init():
 	global server
 
 	access_token = '3ec68f5d2d7437c543d56f5c2620dafc033ccd64286ecc73d23ec8969e9a5424ea9553458ddbbd681e067'
-	newMessage = {}
+	newMessage = queue.Queue()
 	server = {}
 #--------------------------------
 def lpsInit():
