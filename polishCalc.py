@@ -141,9 +141,9 @@ def solvePolish(line):
     ret['dices'] = dices
     return ret
 #--------------------------------
-def cutDices(string, dices):
+def formatSolved(string, dices):
     #print(string)
     #print(dices)
     for dice in dices:
-        string = re.sub(r'\d+d\d+p*\d*',str(dice['num']) + str(dice['dices']), string, 1)
+        string = re.sub(r'(\d+|\(.+\))d(\d+|\(.+\))(p{0,1}(\(.+\)|\d+)|)',str(dice['num']) + str(dice['dices']), string, 1)
     return string
