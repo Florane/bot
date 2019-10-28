@@ -31,41 +31,58 @@ def formatCommanderStats(user,helpListings,mainLock,maxLevel,fileName,setHL,stat
 			bot.printMessage('Ошибка: Неверная сумма вхождений', user)
 	return addStats
 #---------------
-def createCommander(user, helpListings, mainLock):
-	with open('characters/' + user + '.json', 'w+', encoding = 'utf-8') as characterFile:
-		character = {}
-		with open('flavorText/firstCharacter/createCharacter/0.dat', encoding = 'utf-8') as file:
-			bot.printMessage(file.read(), user)
-		mainLock.wait()
-		character['flavor'] = getNewMessage(user).get('message')
+def createCommander(user, helpListings, mainLock, player):
+	character = {}
+	with open('flavorText/firstCharacter/createCharacter/0.dat', encoding = 'utf-8') as file:
+		bot.printMessage(file.read(), user)
+	mainLock.wait()
+	character['flavor'] = getNewMessage(user).get('message')
 
-		character["stats"] = formatCommanderStats(user,helpListings,mainLock,pol.solvePolish(pol.toPolish('40+3d6p1'))['num'],'1.dat','mc',[["INT","Интеллект"],["REF","Рефлексы"],["CHAR","Харизма"],["TECH","Техническе Навыки"],["LUCK","Удача"],["MA","Скорость Бега"],["BODY","Телосложение"],["EM","Эмпатия"]])
-		character["skills"] = formatCommanderStats(user,helpListings,mainLock,40,'2.dat','mvb',[["Notice","Внимательность"],["Handgun","Пистолеты"],["Submachine gun","Пистолеты-пулеметы"],["Rifle","Винтовки"],["Dodge","Уворот"],["Melee","Рукопашная"],["Interrogation","Допрос"],["Oratory","Красноречие"],["Leadership","Руководство"],["Intimidate","Запугивание"],["Weaponsmith","Обращение с оружием"]])
+	character["stats"] = formatCommanderStats(user,helpListings,mainLock,pol.solvePolish(pol.toPolish('40+3d6p1'))['num'],'1.dat','mc',[["INT","Интеллект"],["REF","Рефлексы"],["CHAR","Харизма"],["TECH","Техническе Навыки"],["LUCK","Удача"],["MA","Скорость Бега"],["BODY","Телосложение"],["EM","Эмпатия"]])
+	character["skills"] = formatCommanderStats(user,helpListings,mainLock,50,'2.dat','mvb',[["Notice","Внимательность"],["Handgun","Пистолеты"],["Submachine gun","Пистолеты-пулеметы"],["Rifle","Винтовки"],["Dodge","Уворот"],["Melee","Рукопашная"],["Interrogation","Допрос"],["Oratory","Красноречие"],["Leadership","Руководство"],["Intimidate","Запугивание"],["Weaponsmith","Обращение с оружием"]])
+	character["class"] = "Commander"
 
-		bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
-		characterFile.write(str(character))
+	bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
+	player["characters"].append(character)
+#--------------------------------
+def createCompany(user, helpListings, mainLock):
+	with open('flavorText/firstCharacter/createCompany/0.dat', encoding = 'utf-8') as file:
+		bot.printMessage(file.read(), user)
+	mainLock.wait()
+	return getNewMessage(user).get('message')
 #--------------------------------
 def firstCharacter(user, helpListings, mainLock, errorLock):
 	with open('flavorText/firstCharacter/begin.dat', encoding = 'utf-8') as file:
 		bot.printMessage(file.read(), user)
-		helpListings[0] = 'm'
-		while 1:
-			errorLock.clear()
-			print(errorLock.is_set())
-			mainLock.wait()
-			selection = getNewMessage(user).get("message")
-			if selection == 'Зарегистрировать компанию':
-				print('test')
-				break
-			elif selection == 'Зарегистрировать коммандора':
-				with open('flavorText/firstCharacter/characterFirst0.dat', encoding = 'utf-8') as file:
-					bot.printMessage(file.read(), user)
-				createCommander(user, helpListings, mainLock)
-				break
-			else:
-				bot.printMessage('Нажмите на одну из кнопок ниже, чтобы продолжить' ,user)
-		helpListings[0] = 'm'
-		errorLock.set()
+	helpListings[0] = 'm'
+	player = {"company":{},"characters":[]}
+	while 1:
+		errorLock.clear()
+		print(errorLock.is_set())
+		mainLock.wait()
+		selection = getNewMessage(user).get("message")
+		if selection == 'Зарегистрировать компанию':
+			with open('flavorText/firstCharacter/companyFirst0.dat', encoding = 'utf-8') as file:
+				bot.printMessage(file.read(), user)
+			player['company']['flavor'] = createCompany(user, helpListings, mainLock)
+			with open('flavorText/firstCharacter/characterFirst0.dat', encoding = 'utf-8') as file:
+				bot.printMessage(file.read(), user)
+			createCommander(user, helpListings, mainLock,player)
+			break
+		elif selection == 'Зарегистрировать коммандора':
+			with open('flavorText/firstCharacter/characterFirst0.dat', encoding = 'utf-8') as file:
+				bot.printMessage(file.read(), user)
+			createCommander(user, helpListings, mainLock,player)
+			with open('flavorText/firstCharacter/companyFirst0.dat', encoding = 'utf-8') as file:
+				bot.printMessage(file.read(), user)
+			player['company']['flavor'] = createCompany(user, helpListings, mainLock)
+			break
+		else:
+			bot.printMessage('Нажмите на одну из кнопок ниже, чтобы продолжить' ,user)
+	with open('technical/characters/'+user+'.json','w', encoding = 'utf-8') as file:
+		file.write(str(player))
+	helpListings[0] = 'm'
+	errorLock.set()
 #--------------------------------
 def diceCalc(string):
 	string = string.lower()
