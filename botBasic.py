@@ -8,7 +8,7 @@ def init():
 	global newMessage
 	global server
 
-	access_token = '3ec68f5d2d7437c543d56f5c2620dafc033ccd64286ecc73d23ec8969e9a5424ea9553458ddbbd681e067'
+	access_token = 'dafc83b2c86590370bd54003a90b049aa71d46abe71ee9f663911b9cf1aeec6d5890757ca61ea5b678b95'
 	newMessage = queue.Queue()
 	server = {}
 #--------------------------------
@@ -48,4 +48,11 @@ def printMessage(message, user):
 		r += rq.get(text).text
 		if len(newMsg) > 1:
 			sleep(2)
+	return r
+#--------------------------------
+def pinPrevMessage(user):
+	text = 'https://api.vk.com/method/messages.getHistory?v=5.101&count=1&offset=0'
+	text += '&peer_id=' + str(user)
+	text += "&access_token=" + access_token
+	r = rq.get(text).text
 	return r
