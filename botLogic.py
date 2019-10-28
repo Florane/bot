@@ -104,7 +104,7 @@ def init(user):
 		mainLock.clear()
 		messageSave = getNewMessage(user)
 		message = messageSave.get("message").title()
-		#admin = getNewMessage(user).get("admin")
+		admin = messageSave.get("admin")
 		if message == 'Помощь':
 			print(helpListings)
 			answer = ''
@@ -162,6 +162,14 @@ def init(user):
 				bot.printMessage('Введите "Помощь" чтобы получить список комманд', user)
 			else:
 				bot.newMessage.put(messageSave)
+		#---------------------
+		elif admin != None:
+			if message == 'Бро, Сделай Мне Закреп':
+				with open('technical/todo_list.dat', encoding = 'utf-8') as file:
+					bot.printMessage(file.read(), user)
+				bot.printMessage('Готово', user)
+			if message == 'Тест':
+				print(bot.pinPrevMessage(user))
 		#леня ну мать твою
 		elif message == 'Aide':
 			bot.printMessage('леня блять', user)
