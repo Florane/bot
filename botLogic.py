@@ -113,7 +113,7 @@ def init(user):
 					ans = re.match(r'[' + helpListings[0] + ']\s(.*)', line)
 					if ans != None:
 						answer += ans.group(1) + '\n'
-			bot.printMessage(answer, user)
+			bot.printMessage('Введите "Помощь", чтобы увидеть список команд\nВведите "Помощь <команда>" чтобы увидеть подсказку к команде\n\n'+answer+'\n\nтакже, можешь написать "good bot". это не делает ничего, но я те скажу спс', user)
 		elif re.match(r'Помощь', message) != None:
 			answer = ''
 			command = re.match(r'Помощь\s(.*)', message).group(1)
@@ -155,6 +155,19 @@ def init(user):
 			else:
 				bot.printMessage('Неверный синтаксис', user)
 		#--------------------
+#-----------------------------
+		#леня ну мать твою
+		elif message == 'Aide':
+			bot.printMessage('леня блять', user)
+		elif message == 'Good Bot':
+			print("why tho")
+			with open("technical/good_bot.count") as file:
+				goodBotCount = int(file.read())
+				goodBotCount += 1
+			with open("technical/good_bot.count", "w") as file:
+				file.write(str(goodBotCount))
+			bot.printMessage("thanks for thanking me "+str(goodBotCount)+" times", user)
+#----------------------------
 		elif user[:3] != '200':
 			if message == 'Начать' and helpListings[0].find('f') >= 0:
 				tr.Thread(target = firstCharacter,args =  (user, helpListings, mainLock, errorLock)).start()
@@ -162,7 +175,7 @@ def init(user):
 				bot.printMessage('Введите "Помощь" чтобы получить список комманд', user)
 			else:
 				bot.newMessage.put(messageSave)
-		#---------------------
+#-----------------------------
 		elif admin != None:
 			if message == 'Бро, Сделай Мне Закреп':
 				with open('technical/todo_list.dat', encoding = 'utf-8') as file:
@@ -170,8 +183,5 @@ def init(user):
 				bot.printMessage('Готово', user)
 			if message == 'Тест':
 				print(bot.pinPrevMessage(user))
-		#леня ну мать твою
-		elif message == 'Aide':
-			bot.printMessage('леня блять', user)
 		mainLock.set()
 		#time.sleep(0.1)
