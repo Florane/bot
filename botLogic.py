@@ -1,5 +1,6 @@
 import botBasic as bot
 import queue
+import random as rand
 import polishCalc as pol
 import botCharacter as char
 import time
@@ -38,8 +39,8 @@ def createCommander(user, helpListings, mainLock, player):
 	mainLock.wait()
 	character['flavor'] = getNewMessage(user).get('message')
 
-	character["stats"] = formatCommanderStats(user,helpListings,mainLock,pol.solvePolish(pol.toPolish('40+3d6p1'))['num'],'1.dat','mc',[["INT","Интеллект"],["REF","Рефлексы"],["CHAR","Харизма"],["TECH","Техническе Навыки"],["LUCK","Удача"],["MA","Скорость Бега"],["BODY","Телосложение"],["EM","Эмпатия"]])
-	character["skills"] = formatCommanderStats(user,helpListings,mainLock,50,'2.dat','mvb',[["Notice","Внимательность"],["Handgun","Пистолеты"],["Submachine gun","Пистолеты-пулеметы"],["Rifle","Винтовки"],["Dodge","Уворот"],["Melee","Рукопашная"],["Interrogation","Допрос"],["Oratory","Красноречие"],["Leadership","Руководство"],["Intimidate","Запугивание"],["Weaponsmith","Обращение с оружием"]])
+	character["stats"] = formatCommanderStats(user,helpListings,mainLock,pol.solvePolish(pol.toPolish('40+3d6p1'))['num'],'1.dat','mc',char.constStats)
+	character["skills"] = formatCommanderStats(user,helpListings,mainLock,50,'2.dat','mvb',char.constSkills["leader"])
 	character["class"] = "Commander"
 
 	bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
@@ -155,6 +156,14 @@ def init(user):
 			else:
 				bot.printMessage('Неверный синтаксис', user)
 		#--------------------
+		elif message == 'Нанять':
+			randFile = rand.randint(0,1)
+			with open("flavorText/characterBuy/"+str(randFile)+".dat") as file:
+				bot.printMessage(file.read(), user)
+			buyList = char.characterCreator()
+			for character in buyList:
+				output = char.characterReader(character)
+				bot.printMessage(output, user)
 #-----------------------------
 		#леня ну мать твою
 		elif message == 'Aide':
