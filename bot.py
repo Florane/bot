@@ -31,6 +31,7 @@ while 1:
 						for line in file:
 							if line.strip() == user:
 								addMessage.update({"admin":user})
+					addMessage.update({"peer":user})
 				addMessage.update({"user":peer, "message":message})
 				bot.newMessage.put(addMessage)
 				print(bot.newMessage.queue)

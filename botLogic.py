@@ -1,4 +1,5 @@
 import botBasic as bot
+from os.path import exists
 import queue
 import random as rand
 import polishCalc as pol
@@ -38,10 +39,10 @@ def createCommander(user, helpListings, mainLock, player):
 		bot.printMessage(file.read(), user)
 	mainLock.wait()
 	character['flavor'] = getNewMessage(user).get('message')
-
 	character["stats"] = formatCommanderStats(user,helpListings,mainLock,pol.solvePolish(pol.toPolish('40+3d6p1'))['num'],'1.dat','mc',char.constStats)
 	character["skills"] = formatCommanderStats(user,helpListings,mainLock,50,'2.dat','mvb',char.constSkills["leader"])
-	character["class"] = "Commander"
+
+	character["class"] = "leader"
 
 	bot.printMessage('Новая анкета на персонажа! @id{0}'.format(user), '391442603')
 	player["characters"].append(character)
@@ -62,7 +63,7 @@ def firstCharacter(user, helpListings, mainLock, errorLock):
 		print(errorLock.is_set())
 		mainLock.wait()
 		selection = getNewMessage(user).get("message")
-		if selection == 'Зарегистрировать компанию':
+		if selection == 'Зарегистрировать компанию' or selection == '1':
 			with open('flavorText/firstCharacter/companyFirst0.dat', encoding = 'utf-8') as file:
 				bot.printMessage(file.read(), user)
 			player['company']['flavor'] = createCompany(user, helpListings, mainLock)
@@ -70,7 +71,7 @@ def firstCharacter(user, helpListings, mainLock, errorLock):
 				bot.printMessage(file.read(), user)
 			createCommander(user, helpListings, mainLock,player)
 			break
-		elif selection == 'Зарегистрировать коммандора':
+		elif selection == 'Зарегистрировать коммандора' or selection == '2':
 			with open('flavorText/firstCharacter/characterFirst0.dat', encoding = 'utf-8') as file:
 				bot.printMessage(file.read(), user)
 			createCommander(user, helpListings, mainLock,player)
@@ -82,7 +83,7 @@ def firstCharacter(user, helpListings, mainLock, errorLock):
 			bot.printMessage('Нажмите на одну из кнопок ниже, чтобы продолжить' ,user)
 	with open('technical/characters/'+user+'.json','w', encoding = 'utf-8') as file:
 		file.write(str(player))
-	helpListings[0] = 'm'
+	helpListings[0] = 'ms'
 	errorLock.set()
 #--------------------------------
 def diceCalc(string):
@@ -97,7 +98,9 @@ def diceCalc(string):
 def init(user):
 	helpListings = ['mf']
 	if user[:3] == '200':
-		helpListings[0] = 'm'
+		helpListings[0] = 'ms'
+	if exists("characters/"+str(user)+".json"):
+		helpListings[0] = 'ms'
 	mainLock = tr.Event()
 	errorLock = tr.Event()
 	errorLock.set()
@@ -106,6 +109,7 @@ def init(user):
 		messageSave = getNewMessage(user)
 		message = messageSave.get("message").title()
 		admin = messageSave.get("admin")
+		peer = messageSave.get("peer")
 		if message == 'Помощь':
 			print(helpListings)
 			answer = ''
@@ -122,28 +126,19 @@ def init(user):
 				found = False
 				prevListing = ''
 				for line in file:
-					print(line)
 					if re.match(r'[' + helpListings[0] + ']\s(.*)', line) != None:
-						print('1')
 						prevListing = line[0]
 						if re.match(r'[' + helpListings[0] + ']\s(.*)', line).group(1) == command:
-							print('11')
 							found = True
 						else:
-							print('12')
 							found = False
 					elif re.match(r'-\s(.*)', line) != None:
-						print('2')
 						if re.match(r'-\s(.*)', line).group(1) == command and prevListing in helpListings[0]:
-							print('21')
 							found = True
 					elif re.match(r'.\s', line) != None:
-						print('3')
 						found = False
 					elif found == True:
-						print('4')
 						if re.match(r'-\s', line) == None:
-							print('41')
 							answer += line
 			bot.printMessage(answer, user)
 		#--------------------
@@ -156,7 +151,7 @@ def init(user):
 			else:
 				bot.printMessage('Неверный синтаксис', user)
 		#--------------------
-		elif message == 'Нанять':
+		elif message == 'Нанять' and helpListings[0].find('f') < 0:
 			randFile = rand.randint(0,1)
 			with open("flavorText/characterBuy/"+str(randFile)+".dat") as file:
 				bot.printMessage(file.read(), user)
